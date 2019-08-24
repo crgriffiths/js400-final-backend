@@ -2,9 +2,10 @@
   "name": "js400-final-backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "reset": "node ./db/seeds"
   },
   "repository": {
     "type": "git",

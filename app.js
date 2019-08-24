@@ -10,7 +10,7 @@ app.use(bodyparser.json())
 
 // Routes
 app.use('/api/assignments', require('./api/routes/assignments'))
-app.use('/api/students', require('./api/routes/students'))
+app.use('/api/students', require('./api/routes/users'))
 app.use('/api/auth', require('./api/routes/auth'))
 
 // Not Found Handler

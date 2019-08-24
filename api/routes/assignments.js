@@ -18,3 +18,5 @@ router.patch('/:aid/grade')
 // (Admin Only) Return a list of all graded assingments by all students
 router.get('/graded', (req,res,next) => {})
 
+module.exports = router
+

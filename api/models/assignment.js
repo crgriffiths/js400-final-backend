@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const Grade = require('./grade')
+//const Grade = require('./grade')
 
 const schema = new mongoose.Schema({
   title: {
@@ -11,7 +11,14 @@ const schema = new mongoose.Schema({
   description: {
     type: String
   },
-  grade: [Grade]
+  grade: {
+    pointsEarned: {
+      type: Number
+    },
+    pointsPossible: {
+      type: Number
+    }
+  }
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 
 module.exports = schema
