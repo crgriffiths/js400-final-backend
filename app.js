@@ -3,6 +3,10 @@ const express = require('express')
 const app = express()
 const bodyparser = require('body-parser')
 
+// DB Connect
+require('./db/dbconnect')()
+
+
 // Application-level Middleware
 if (NODE_ENV === 'development') app.use(require('morgan')('dev'))
 
