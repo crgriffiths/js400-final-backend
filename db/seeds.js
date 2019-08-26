@@ -15,6 +15,10 @@ const reset = async () => {
       email: 'student@email.com',
       password: bcrypt.hashSync('password', 10),
       isAdmin: false,
+      gradeTotal: {
+        pointsEarned: 167,
+        pointsPossible: 200
+      },
       assignments: [
         {
           title: 'HTML & CSS Final Project',

@@ -22,6 +22,10 @@ const schema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  gradeTotal: {
+    pointsEarned: Number,
+    pointsPossible: Number
+  },
   assignments: [Assignment]
   
 }, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
