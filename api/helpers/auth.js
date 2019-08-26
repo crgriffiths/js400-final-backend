@@ -52,4 +52,12 @@ const isCurrentUser = (req, _res, next) => {
   next(error)
 }
 
-module.exports = {decodeToken, createToken, checkOwner, isLoggedIn, isAdmin, isCurrentUser}
+const requiresAdmin = (token) => {
+  const payload = decodeToken(token)
+  if (payload.isAdmin) return next()
+  const error = new Error('You are not authorized to perform this action')
+  error.status = 401
+  next(error)
+}
+
+module.exports = {decodeToken, createToken, checkOwner, isLoggedIn, isAdmin, isCurrentUser, requiresAdmin}
