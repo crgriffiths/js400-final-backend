@@ -22,7 +22,7 @@ router.post('/signup', async (req,res,next) => {
   const passwordHash = await bcrypt.hash(password, 10)
   const existingUser = await User.findOne({email})
   if (existingUser) {
-    const error = new Error(`Email '${email}' is already registered.`)
+    const error = new  Error(`Email '${email}' is already registered.`)
     error.status = 400
     next(error)
   }
@@ -34,21 +34,20 @@ router.post('/signup', async (req,res,next) => {
 
 router.post('/login', async (req,res,next) => {
   const {email, password} = req.body
-  const user = await User.findOne({email})
-  if (user) {
-    await bcrypt.compare(password, user.password).then(function(response) {
-      if (response) {
-        const status = 200
-        const response = 'Sign in successful'
-        const token = createToken(user._id, user.isAdmin)
-        res.status(status).json({status, response, token})
-        return
-      }
-      const error = new Error('Username or password incorrect. Please check your credentials and try again.')
-      error.status = 401
-      next(error)
-    })
+  const user = await User.findOne({ email })
+  if (user === null ) {
+    const error = new Error('Username or password incorrect. Please check your credentials and try again.')
+    error.status = 401
+    next(error)
   }
+  await bcrypt.compare(password, user.password).then(function(response) {
+    if (response) {
+      const status = 200
+      const response = 'Sign in successful'
+      const token = createToken(user._id, user.isAdmin)
+      res.status(status).json({status, response, token})
+    }
+  })
 })
 
 module.exports = router

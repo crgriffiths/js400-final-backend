@@ -1,5 +1,6 @@
 const { NODE_ENV, PORT } = process.env
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const bodyparser = require('body-parser')
 
@@ -11,6 +12,13 @@ require('./db/dbconnect')()
 if (NODE_ENV === 'development') app.use(require('morgan')('dev'))
 
 app.use(bodyparser.json())
+
+// Use cors
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  optionsSuccessStatus: 200
+}
+app.use(cors(corsOptions))
 
 // Routes
 app.use('/api/assignments', require('./api/routes/assignments'))
