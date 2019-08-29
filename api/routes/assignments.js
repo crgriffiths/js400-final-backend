@@ -16,12 +16,30 @@ router.get('/', isLoggedIn, async (req, res, next) => {
 // Create a new assignment for the logged in student user
 router.post('/', async (req, res, next) => {
   const status = 201
+  //const {title, link, description} = req.body
+  //console.log(title,link,description)
   const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
   const user = await User.findOne({_id: payload.id})
-  const assignment = {...req.body}
-  user.assignments.push(assignment)
+  user.assignments.push({title:req.body.title,link:req.body.link,description:req.body.description})
   await user.save()
   const newAssignment = user.assignments[user.assignments.length - 1]
+  res.json({status, response: newAssignment})
+})
+
+/**
+ * TODO: Fix DELETE path
+ */
+
+// Create a new assignment for the logged in student user
+router.delete('/:aid', async (req, res, next) => {
+  const status = 201
+  const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
+  const user = await User.findOne({_id: payload.id})
+  //const assignment = {...req.body}
+  //console.log(assignment)
+  //user.assignments.push(assignment)
+  await user.save()
+  //const newAssignment = user.assignments[user.assignments.length - 1]
   res.json({status, response: newAssignment})
 })
 

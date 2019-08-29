@@ -3,13 +3,16 @@ const mongoose = require('mongoose')
 
 const schema = new mongoose.Schema({
   title: {
-    type: String
+    type: String,
+    required: true
   },
   link: {
-    type: String
+    type: String,
+    required: true
   },
   description: {
-    type: String
+    type: String,
+    required: true
   },
   grade: {
     pointsEarned: {
