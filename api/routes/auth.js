@@ -10,7 +10,6 @@ router.get('/profile', async (req, res, next) => {
     const status = 200
     res.json({ status, user })
   } catch (e) {
-    console.error(e)
     const error = new Error('You are not authorized to access this route.')
     error.status = 401
     next(error)
@@ -18,6 +17,7 @@ router.get('/profile', async (req, res, next) => {
 })
 
 router.post('/signup', async (req,res,next) => {
+  const status = 200
   const {email, password, firstName, lastName} = req.body
   const passwordHash = await bcrypt.hash(password, 10)
   const existingUser = await User.findOne({email})
@@ -29,7 +29,7 @@ router.post('/signup', async (req,res,next) => {
   const newUser = await User.create({email, password: passwordHash, firstName, lastName})
   const token = createToken(newUser._id, newUser.isAdmin)
   const message = 'You have successfully signed up'
-  res.status(201).json({status,token, message})
+  res.json({status,token, message})
 })
 
 router.post('/login', async (req,res,next) => {
