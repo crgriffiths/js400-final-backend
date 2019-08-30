@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Assignment = require('./assignment')
 
-const schema = new mongoose.Schema({
+const schema = mongoose.Schema({
   firstName: {
     type: String,
     required: true
@@ -26,8 +26,11 @@ const schema = new mongoose.Schema({
     pointsEarned: Number,
     pointsPossible: Number
   },
-  assignments: [Assignment]
+  assignments: {
+    type: [Assignment],
+    default: undefined
+  }
   
-}, { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
+}, { _id: true, timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } })
 
 module.exports = mongoose.model('User', schema)

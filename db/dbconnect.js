@@ -6,7 +6,7 @@ const dbconnect = async () => {
     if (!MONGO_DB_CONNECTION) {
       throw 'No valid Mongo DB Connection string found'
     }
-    mongoose.connect(MONGO_DB_CONNECTION, {useNewUrlParser: true, useFindAndModify: true})
+    mongoose.connect(MONGO_DB_CONNECTION, {useNewUrlParser: true, useFindAndModify: false})
     console.log('Mongo db connection established...')
   } catch (error) {
     console.log(error.message)

@@ -11,14 +11,18 @@ const createToken = (id, isAdmin) => {
 }
 
 const checkOwner = async (req, _res, next) => {
-  console.log(req.params)
   const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
   const user = await User.findById(payload.id)
   const assignment = user.assignments.id(req.params.aid)
-  if (assignment) next()
-  const error = new Error('You are not authorized for this action')
-  error.status = 401
-  next(error)
+  //console.log(assignment)
+  if (assignment._id != req.params.aid) {
+    console.log(assignment._id, req.params.aid)
+    const error = new Error('You are not authorized for this action')
+    error.status = 401
+    next(error)
+  }
+  next()
+
 }
 const isLoggedIn = (req, _res, next) => {
   if (!req.headers.authorization.split('Bearer ')[1]) {

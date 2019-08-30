@@ -12,18 +12,24 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   const response = await User.findOne({_id: payload.id}).select('assignments')
   res.json({status, response})
 })
+router.get('/:aid', isLoggedIn, async (req, res, next) => {
+  const status = 200
+  const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
+  const user = await User.findOne({_id: payload.id})
+  const assignment = user.assignments.id(req.params.aid)
+  res.json({status, assigment})
+})
 
 // Create a new assignment for the logged in student user
 router.post('/', async (req, res, next) => {
   const status = 201
-  //const {title, link, description} = req.body
-  //console.log(title,link,description)
+  const assignment = {title:req.body.title,link:req.body.link,description:req.body.description}
   const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
   const user = await User.findOne({_id: payload.id})
-  user.assignments.push({title:req.body.title,link:req.body.link,description:req.body.description})
+  user.assignments.push(assignment)
   await user.save()
   const newAssignment = user.assignments[user.assignments.length - 1]
-  res.json({status, response: newAssignment})
+  res.status(status).json({status, response: newAssignment})
 })
 
 /**
@@ -31,27 +37,27 @@ router.post('/', async (req, res, next) => {
  */
 
 // Create a new assignment for the logged in student user
-router.delete('/:aid', async (req, res, next) => {
-  const status = 201
+router.delete('/:aid', isLoggedIn, checkOwner, async (req, res, next) => {
+  const status = 200
   const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
   const user = await User.findOne({_id: payload.id})
-  //const assignment = {...req.body}
-  //console.log(assignment)
-  //user.assignments.push(assignment)
+  const assignment = user.assignments.id(req.params.aid)
+  assignment.remove()
   await user.save()
-  //const newAssignment = user.assignments[user.assignments.length - 1]
-  res.json({status, response: newAssignment})
+  res.json({status, message: `Assignment with id:${req.params.aid} removed`})
 })
 
 // Edit an assignment by Assignment ID (only edit title,link,desc)
 router.patch('/:aid', isLoggedIn, checkOwner, async (req, res, next) => {
   const status = 200
-  const user = await User.findById(payload.id)
-  const assignment = user.findByIdAndUpdate(req.params.aid, req.body)
-  //assignment.set(req.body)
-  //await user.save()
-  //const response = user.assignments.id(req.params.aid)
-  res.json(status,assignment)
+  const update = {title: req.body.title, link: req.body.link, description: req.body.description}
+  const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
+  const user = await User.findOne({_id: payload.id})
+  const assignment = user.assignments.id(req.params.aid)
+  assignment.set(update)
+  await user.save()
+  console.log(assignment)
+  res.status(status).json(assignment)
 })
 
 // (Admin Only) Return a list of all ungraded assignments by all students
