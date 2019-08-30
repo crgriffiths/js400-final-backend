@@ -5,6 +5,23 @@ const assignmentSchema = require('../models/assignment')
 const Assignment = mongoose.model('Assignment', assignmentSchema) 
 const { decodeToken, createToken, checkOwner, isLoggedIn, isAdmin, isCurrentUser, requiresAdmin} = require('../helpers/auth')
 
+
+// (Admin Only) Return a list of all graded assingments by all students
+router.get('/graded', async (req,res,next) => {
+  const status = 200
+  const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
+  const users = await User.find({"assignments.grade.pointsEarned":{$exists:true}})
+  res.status(status).json(users)
+})
+
+// (Admin Only) Return a list of all ungraded assignments by all students
+router.get('/ungraded', async (req, res, next) => {
+  const status = 200
+  const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
+  const users = await User.find({"assignments.grade.pointsEarned":{$exists:false}})
+  res.status(status).json(users)
+})
+
 // Return list of assigments for the logged in student user
 router.get('/', isLoggedIn, async (req, res, next) => {
   const status = 200
@@ -17,7 +34,7 @@ router.get('/:aid', isLoggedIn, async (req, res, next) => {
   const payload = decodeToken(req.headers.authorization.split('Bearer ')[1])
   const user = await User.findOne({_id: payload.id})
   const assignment = user.assignments.id(req.params.aid)
-  res.json({status, assigment})
+  res.json({status, respnseassignment})
 })
 
 // Create a new assignment for the logged in student user
@@ -60,12 +77,7 @@ router.patch('/:aid', isLoggedIn, checkOwner, async (req, res, next) => {
   res.status(status).json(assignment)
 })
 
-// (Admin Only) Return a list of all ungraded assignments by all students
-router.get('/ungraded', requiresAdmin, async (req, res, next) => {
-  const status = 200
-  const response = Assignment.find({grade:{pointsEarned:{$exists: false}}})
-  res.json({status,response})
-})
+
 
 // (Admin Only) Assign a grade to an assignment. Accepts to params: 1) Score, 2) Total Score Possible
 // This must also aggregate assignments for the user and update their total score. 
@@ -78,11 +90,6 @@ router.patch('/:aid/grade', requiresAdmin, async (req, res, next) => {
   res.json({status, assigment})
 })
 
-// (Admin Only) Return a list of all graded assingments by all students
-router.get('/graded', requiresAdmin, async (req,res,next) => {
-  const status = 200
-  const response = Assignment.find({grade:{pointsEarned:{$exists: true}}})
-  res.json({status,response})
-})
+
 
 module.exports = router
